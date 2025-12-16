@@ -12,7 +12,7 @@ def test_echo(client):
     assert response.status_code == 200
     assert response.get_json() == {"echo": {"message": "Hello, World!"}}
 
-def test_strlen(client):
-    response = client.post('/strlen', json={"message": "Hello, World!"})
+def test_string_length(client):
+    response = client.post('/string_length', json={"message": "Hello, World!"})
     assert response.status_code == 200
     assert response.get_json() == {"length": 13}
