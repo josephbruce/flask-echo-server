@@ -12,3 +12,22 @@ def test_echo(client):
     assert response.status_code == 200
     assert response.get_json() == {"echo": {"message": "Hello, World!"}}
 
+def test_strlen(client):
+    response = client.post('/strlen', json={"text": "Hello, World!"})
+    assert response.status_code == 200
+    assert response.get_json() == {"length": 13}
+
+def test_strlen_non_string(client):
+    response = client.post('/strlen', json={"text": 123})
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "'text' field must be a string"}
+
+def test_strlen_non_dict(client):
+    response = client.post('/strlen', json=["not a dict"])
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Invalid JSON payload, expected an object"}
+
+def test_strlen_missing_text(client):
+    response = client.post('/strlen', json={})
+    assert response.status_code == 200
+    assert response.get_json() == {"length": 0}
