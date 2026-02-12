@@ -12,3 +12,27 @@ def test_echo(client):
     assert response.status_code == 200
     assert response.get_json() == {"echo": {"message": "Hello, World!"}}
 
+def test_strlen(client):
+    response = client.post('/strlen', json={"text": "hello"})
+    assert response.status_code == 200
+    assert response.get_json() == {"length": 5}
+
+def test_strlen_missing_text(client):
+    response = client.post('/strlen', json={})
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Missing 'text' key"}
+
+def test_strlen_not_string(client):
+    response = client.post('/strlen', json={"text": 123})
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "'text' must be a string"}
+
+def test_strlen_invalid_json(client):
+    response = client.post('/strlen', data="not json", content_type='application/json')
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Invalid JSON"}
+
+def test_strlen_json_list(client):
+    response = client.post('/strlen', json=[])
+    assert response.status_code == 400
+    assert response.get_json() == {"error": "Invalid JSON"}
